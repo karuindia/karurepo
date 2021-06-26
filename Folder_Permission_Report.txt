@@ -1,0 +1,14 @@
+# Run this code for all path
+Get-childitem "\\LIM-FS01\H$" | where{$_.psiscontainer} |
+Get-Acl | % {
+$path = $_.Path
+$_.Access | % {
+New-Object PSObject -Property @{
+Folder = $path.Replace("Microsoft.PowerShell.Core\FileSystem::","")
+Access = $_.FileSystemRights
+Control = $_.AccessControlType
+User = $_.IdentityReference
+Inheritance = $_.IsInherited
+}
+}
+} |export-csv "c:\new\LIM-FS1-Hdrive.csv" #Change filename for each share
